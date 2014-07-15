@@ -29,4 +29,3 @@ done
 ### subdomains
 
 pass an extra query string parameter: `name=subdomain.example.com`
-

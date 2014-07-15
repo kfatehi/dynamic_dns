@@ -2,6 +2,8 @@
 
 provides an http endpoint to update configured cloudflare record
 
+it won't hit cloudflare unless it thinks it needs to
+
 ## server setup
 
 * install on a server with a static IP, e.g. digital ocean VPS
@@ -19,9 +21,12 @@ setup a loop to send GET requests to the endpoint containing your secret
 ```
 secret="mysecret"
 while true; do
-  curl -k https://example.org:3000/$secret
+  curl -k https://example.org:3000/example.com/?secret=$secret
   sleep 30
 done
 ```
 
+### subdomains
+
+pass an extra query string parameter: `name=subdomain.example.com`
 

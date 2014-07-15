@@ -1,15 +1,15 @@
 {
   "name": "dynamic_dns",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "provides an http endpoint to update configured cloudflare record",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Keyvan Fatehi <keyvanfatehi@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "cloudflare": "0.0.6",
+    "cloudflare": "git://github.com/keyvanfatehi/node-cloudflare#patch-1",
     "express": "^4.6.1",
     "lodash": "^2.4.1"
   }

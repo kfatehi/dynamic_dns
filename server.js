@@ -18,9 +18,10 @@ app.route('/:zone_name')
   req.query.secret !== config.secret ? res.send(401) : next();
 })
 .get(function (req, res, next) {
-  var addr = req.connection.remoteAddress;
-  if (cache[req.params.zone_name] === addr) res.send(200, "No change");
-  else { cache[req.params.zone_name] = addr; next() }
+  var ip = req.ip = req.connection.remoteAddress;
+  var name = req.name = req.query.name || req.params.zone_name;
+  if (cache[name] === ip) res.send(200, "no change "+req.name+" -> "+req.ip);
+  else { cache[name] = ip; next() }
 })
 .get(function (req, res, next) {
   cf.listDomains(function (err, domains) {
@@ -30,40 +31,49 @@ app.route('/:zone_name')
       req.zone = zone;
       next();
     } else {
-      res.send(404, "No such zone "+req.params.zone_name);
+      res.send(404, "no zone "+req.params.zone_name);
     }
   });
 })
 .get(function (req, res, next) {
-  var name = req.query.name || req.params.zone_name;
   cf.listDomainRecords(req.params.zone_name, function (err, records) {
     if (err) throw err;
-    var record = _.find(records, { name: name });
+    var record = _.find(records, { name: req.name });
     if (record) {
       req.record = record;
       // check if we need to change this record, and if so, update the record
-      if (record.content === req.connection.remoteAddress) {
-        console.log("no change required");
+      if (record.content === req.ip) {
+        res.send(200, "no change "+req.name+" -> "+req.ip);
       } else {
-        console.log("updating record "+name+" to point to "+req.connection.remoteAddress);
+        next();
       }
-      res.send(record);
     } else {
       // create the record, it did not exist
-      res.send(200, 'record '+name+'did not exist');
+      cf.addDomainRecord(req.zone.zone_name, {
+        type: "A",
+        content: req.ip,
+        name: req.name
+      }, function (err) {
+        if (err) throw err;
+        res.send(201, "created "+req.name+" -> "+req.ip);
+      })
     }
   })
 })
-//.get(function (req, res, next) {
-//  cf.editDomainRecord(zone_name, zone.zone_id, {
-//
-//  }, function (err, res) {
-//    if (err) throw err;
-//    res.send(res);
-//  })
-//});
+.get(function (req, res, next) {
+  cf.editDomainRecord(req.record.zone_name, req.record.rec_id, {
+    type: "A",
+    content: req.ip,
+    name: req.record.name,
+    ttl: 1
+  }, function (err, data) {
+    if (err) throw err;
+    res.send(200, "updated "+req.record.name+" -> "+req.ip)
+  })
+});
 
 https.createServer(config.ssl, app).listen(config.port, function(){
   console.log("HTTPS server listening on port "+config.port);
-  console.log('Send HTTP GET requests to /'+config.secret);
+  console.log('Send HTTP GET requests to /example.com with required query string secret='+config.secret);
+  console.log('Optionally include query string for subdomains like this: name=subdomain.example.com');
 });

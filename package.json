@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.6.1"
+    "cloudflare": "0.0.6",
+    "express": "^4.6.1",
+    "lodash": "^2.4.1"
   }
 }

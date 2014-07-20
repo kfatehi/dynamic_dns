@@ -1,2 +1,3 @@
 etc/config.js
 etc/ssl/*
+node_modules/*

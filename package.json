@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "description": "provides an http endpoint to update configured cloudflare record",
   "main": "server.js",
+  "bin": "./bin/cli.js",
   "dependencies": {
-    "cloudflare": "^0.0.6",
+    "cloudflare": "git://github.com/keyvanfatehi/node-cloudflare#patch-1",
     "express": "^4.6.1",
-    "lodash": "^2.4.1"
+    "lodash": "^2.4.1",
+    "yargs": "^1.2.6"
   },
   "keywords": [
     "cloudflare",
@@ -29,10 +31,5 @@
   "bugs": {
     "url": "https://github.com/keyvanfatehi/dynamic_dns/issues"
   },
-  "homepage": "https://github.com/keyvanfatehi/dynamic_dns",
-  "dependencies": {
-    "cloudflare": "git://github.com/keyvanfatehi/node-cloudflare#patch-1",
-    "express": "^4.6.1",
-    "lodash": "^2.4.1"
-  }
+  "homepage": "https://github.com/keyvanfatehi/dynamic_dns"
 }

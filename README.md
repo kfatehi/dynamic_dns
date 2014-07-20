@@ -27,3 +27,7 @@ while true; do
 done
 EOF
 ```
+
+## caveats
+
+due to the way the server is caching requests (to avoid abusing cloudflare) if you edit or delete a record on cloudflare, it `dynamic_dns` may never know and will stop working. a patch is required that will actually `dig` the name too in addition to checking the cache. until then, don't edit manually.

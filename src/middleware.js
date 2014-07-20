@@ -39,11 +39,14 @@ module.exports = function (config, cf) {
               // check if we need to change this record, and if so, update the record
               if (record.content === req.ip) {
                 res.send(200, "no change "+req.rec_name+" -> "+req.ip);
+              } else {
+                req.newRecord = false;
+                next()
               }
             } else {
               req.newRecord = true;
+              next();
             }
-            next();
           })
         } else {
           res.send(404, "no zone "+req.zone_name);

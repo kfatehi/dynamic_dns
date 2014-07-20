@@ -6,26 +6,24 @@ it won't hit cloudflare unless it thinks it needs to
 
 ## server setup
 
-* install on a server with a static IP, e.g. digital ocean VPS
+* install on a server with a static IP, e.g. (a digital ocean VPS) via npm `npm install -g dynamic_dns`
 * generate ssl cert `openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com" -keyout etc/ssl/server.key -out etc/ssl/server.crt`
 * copy config example `cp etc/config.example.js etc/config.js`
 * make sure to change your secret in `etc/config.js`
-* start the daemon `node server.js`
+* start the daemon `dynamic_dns -k /path/to/key -c /path/to/cert -e you@example.org -t your_cloudflare_token`
 
 ## client setup
 
-setup a loop to send GET requests to the endpoint containing your secret
-
-### bash curl example
+install a client like so
 
 ```
-secret="mysecret"
+cat <<EOF | sudo tee /usr/local/bin/dynamic_dns_client
+#!/bin/sh
 while true; do
-  curl -k https://example.org:3000/example.com/?secret=$secret
-  sleep 30
+  curl https://example.org:3000/example.org/\?secret\=your_secret 2>/dev/null
+  curl https://example.org:3000/www.example.org/\?secret\=your_secret 2>/dev/null
+  echo
+  sleep 120
 done
+EOF
 ```
-
-### subdomains
-
-pass an extra query string parameter: `name=subdomain.example.com`

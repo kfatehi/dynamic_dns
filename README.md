@@ -4,6 +4,8 @@ provides an http endpoint to update configured cloudflare record
 
 it won't hit cloudflare unless it thinks it needs to
 
+**note** i now use a much simpler approach: https://gist.github.com/larrybolt/6295160
+
 ## server setup
 
 * install on a server with a static IP, e.g. (a digital ocean VPS) via npm `npm install -g dynamic_dns`
